@@ -2,142 +2,216 @@
 
 A full-stack web application that predicts disease risk using AI-powered analysis and interactive visual dashboards.
 
-## Tech Stack
+## 🌟 Features
+
+- **Multi-Disease Prediction**: Heart Disease & Diabetes risk assessment using advanced ML algorithms
+- **Interactive Dashboards**: Rich visualizations with Chart.js for data analysis
+- **Secure Authentication**: Complete user management with bcrypt encryption
+- **Health Score Calculator**: Comprehensive 0-100 health scoring system  
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
+- **Data Export**: CSV export and individual report downloads
+- **Real-time Analytics**: Live charts and trend analysis
+
+## 🛠️ Tech Stack
 
 | Layer           | Technology                     |
 | --------------- | ------------------------------ |
 | Backend         | Python Flask                   |
 | Frontend        | HTML, CSS, JavaScript          |
-| Machine Learning| Scikit-learn (Random Forest)   |
-| Database        | MongoDB (PyMongo)              |
+| Machine Learning| Scikit-learn (Random Forest & Gradient Boosting) |
+| Database        | MongoDB Atlas (Cloud)          |
 | Visualization   | Chart.js                       |
+| Security        | bcrypt, CSRF protection, Rate limiting |
 
-## Project Structure
+## 📁 Project Structure
 
 ```
-├── app.py                  # Flask backend (main server)
-├── train_model.py          # ML model training script
-├── requirements.txt        # Python dependencies
-├── README.md               # This file
+├── app.py                          # Flask backend (main server)
+├── train_model.py                  # ML model training script  
+├── requirements.txt                # Python dependencies
+├── README.md                       # This file
+├── DOCUMENTATION.md                # Detailed project documentation
+├── .gitignore                      # Git ignore patterns
 ├── model/
-│   ├── model.pkl           # Trained Random Forest model
-│   └── model_meta.pkl      # Model metadata (accuracy, features)
+│   ├── heart_model.pkl             # Heart disease classifier
+│   ├── diabetes_model.pkl          # Diabetes risk classifier
+│   ├── model.pkl                   # Legacy heart model
+│   └── model_meta.pkl              # Model metadata
 ├── static/
 │   ├── css/
-│   │   └── style.css       # Main stylesheet
+│   │   └── style.css               # Application styles
 │   └── js/
-│       └── main.js         # Frontend JavaScript
-└── templates/
-    ├── home.html           # Landing page
-    ├── login.html          # Login page
-    ├── register.html       # Registration page
-    ├── dashboard.html      # Main dashboard
-    ├── health_form.html    # Health data input form
-    ├── result.html         # Prediction result page
-    ├── history.html        # Prediction history table
-    └── profile.html        # User profile page
+│       └── main.js                 # Frontend JavaScript
+├── templates/                      # HTML templates (12 pages)
+│   ├── home.html                   # Landing page
+│   ├── login.html                  # Login page
+│   ├── register.html               # Registration page
+│   ├── dashboard.html              # User dashboard
+│   ├── health_form.html            # Health assessment form
+│   ├── result.html                 # Prediction results
+│   ├── history.html                # Prediction history
+│   ├── analytics.html              # Analytics dashboard
+│   ├── bmi_calculator.html         # BMI calculator
+│   ├── profile.html                # User profile
+│   ├── forgot_password.html        # Password reset
+│   ├── verify_otp.html             # OTP verification
+│   └── reset_password.html         # New password form
+└── Healthcare_Data_Analysis_Academic_Report.docx  # Academic documentation
 ```
 
-## Setup Instructions
+## 🚀 Setup Instructions
 
 ### Prerequisites
 
-1. **Python 3.8+** – Download from https://www.python.org/downloads/
-2. **MongoDB** – Choose one option:
-   - **Local MongoDB**: Download from https://www.mongodb.com/try/download/community
-   - **MongoDB Atlas (Cloud)**: Free tier at https://www.mongodb.com/atlas
+1. **Python 3.8+** – Download from [python.org](https://www.python.org/downloads/)
+2. **MongoDB Atlas Account** – Free tier at [mongodb.com/atlas](https://www.mongodb.com/atlas)
+3. **Git** (for cloning) – Download from [git-scm.com](https://git-scm.com/)
 
-### Step 1: Install Python Dependencies
+### Step 1: Clone the Repository
 
-Open a terminal in the project folder and run:
+```bash
+git clone https://github.com/Kirankottapu/Healthcare-Data-Analysis-is-Using-Visualization-and-Predictive-Models.git
+cd Healthcare-Data-Analysis-is-Using-Visualization-and-Predictive-Models
+```
+
+### Step 2: Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Step 2: Set Up MongoDB
+### Step 3: Set Up MongoDB Atlas
 
-#### Option A: Local MongoDB
-1. Install MongoDB Community Server
-2. Start the MongoDB service:
-   - **Windows**: MongoDB runs as a service automatically after installation
-   - Or run: `mongod` in terminal
-3. Default connection: `mongodb://localhost:27017/`
+1. Create account at [MongoDB Atlas](https://www.mongodb.com/atlas)
+2. Create a new cluster (free M0 tier)
+3. Add your IP to Network Access
+4. Create database user with password
+5. Get connection string
 
-#### Option B: MongoDB Atlas (Cloud – Free)
-1. Go to https://www.mongodb.com/atlas
-2. Create a free account and cluster
-3. Get your connection string (looks like: `mongodb+srv://username:password@cluster.xxxxx.mongodb.net/`)
-4. Set the environment variable before running the app:
-
-**Windows (PowerShell):**
-```powershell
-$env:MONGO_URI = "mongodb+srv://username:password@cluster.xxxxx.mongodb.net/"
-```
-
-**Windows (CMD):**
-```cmd
-set MONGO_URI=mongodb+srv://username:password@cluster.xxxxx.mongodb.net/
-```
-
-**Mac/Linux:**
-```bash
-export MONGO_URI="mongodb+srv://username:password@cluster.xxxxx.mongodb.net/"
-```
-
-### Step 3: Train the ML Model
+### Step 4: Train ML Models
 
 ```bash
 python train_model.py
 ```
 
 This will:
-- Generate a healthcare dataset with realistic medical data
-- Train a Random Forest classifier
-- Display accuracy, precision, recall, and F1-score
-- Save `model.pkl` and `model_meta.pkl` in the `model/` folder
+- Generate healthcare datasets with realistic medical data
+- Train Random Forest (heart disease) and Gradient Boosting (diabetes) models
+- Display performance metrics (accuracy, precision, recall, F1-score)
+- Save trained models in the `model/` folder
 
-### Step 4: Run the Application
+### Step 5: Run the Application
 
 ```bash
 python app.py
 ```
 
-The server starts at: **http://localhost:5000**
+🌐 **Server starts at:** http://localhost:5000
 
-### Step 5: Use the Application
+### Step 6: Use the Application
 
 1. Open **http://localhost:5000** in your browser
-2. Click **Register** to create an account
-3. **Login** with your credentials
-4. On the **Dashboard**, click **Enter Health Details**
-5. Fill in the health form and click **Predict Health Risk**
-6. View your **result with charts**, health tips, and probability
-7. Check **Prediction History** for past records
-8. **Download reports** as text files
+2. **Register** a new account or **Login**
+3. Navigate to **Dashboard** → **New Prediction**
+4. Fill in the health assessment form
+5. View your **risk prediction with probability**
+6. Explore **Analytics Dashboard** for visualizations
+7. Check **Prediction History** for past assessments
+8. Export data using **CSV export** functionality
 
-## Features
+## 🔐 Security Features
 
-- **User Authentication**: Register/Login with bcrypt password hashing
-- **Health Data Input**: Age, BP, sugar, height, weight, lifestyle habits
-- **ML Prediction**: Random Forest model predicts High/Low risk with probability
-- **Interactive Charts**: Pie charts, bar charts, and timeline graphs (Chart.js)
-- **Prediction History**: Table of all past predictions with download option
-- **User Profile**: View and update account information
-- **Health Tips**: Contextual recommendations based on your data
-- **Responsive Design**: Works on desktop, tablet, and mobile
-- **Report Download**: Download prediction reports as text files
+- **CSRF Protection**: All POST forms protected with security tokens
+- **Rate Limiting**: 5 login attempts per 15 minutes before lockout  
+- **Session Management**: 30-minute timeout with secure session handling
+- **Password Security**: bcrypt hashing with salt for password encryption
+- **Input Validation**: Server-side validation for all user inputs
+- **Data Encryption**: HTTPS enforcement for secure data transmission
 
-## Troubleshooting
+## 🤖 Machine Learning Models
+
+### Heart Disease Prediction
+- **Algorithm**: Random Forest Classifier
+- **Accuracy**: ~81% (5-fold cross-validation)
+- **AUC-ROC**: ~99%
+- **Dataset**: UCI Cleveland Heart Disease Database (297 patients)
+
+### Diabetes Risk Assessment  
+- **Algorithm**: Gradient Boosting Classifier
+- **Accuracy**: ~75% (5-fold cross-validation)
+- **AUC-ROC**: ~94%
+- **Dataset**: Pima Indians Diabetes Database (768 patients)
+
+### Key Input Features (16 total)
+- Age, Gender, Blood Pressure, Cholesterol
+- Heart Rate, Blood Sugar, BMI
+- Lifestyle factors (smoking, exercise, alcohol)
+- Clinical indicators (ECG, chest pain, etc.)
+
+## 📊 Dashboard Features
+
+- **Risk Distribution Charts**: Interactive pie charts
+- **Health Timeline**: Trend analysis over time
+- **BMI Calculator**: Built-in body mass index calculator
+- **Health Score**: Comprehensive 0-100 scoring system
+- **Export Options**: CSV download and individual reports
+- **Dark Mode**: Eye-friendly dark theme option
+
+## 🩺 Use Cases
+
+- **Educational**: Medical and CS students learning ML in healthcare
+- **Research**: Healthcare informatics and predictive modeling studies
+- **Screening**: Preliminary health risk assessment (not diagnostic)
+- **Prevention**: Early detection for preventive healthcare strategies
+
+## 🐛 Troubleshooting
 
 | Issue | Solution |
-| ----- | -------- |
+|-------|----------|
 | `ModuleNotFoundError` | Run `pip install -r requirements.txt` |
-| MongoDB connection error | Ensure MongoDB is running (`mongod`) or check Atlas URI |
+| MongoDB connection error | Check internet connection and Atlas IP whitelist |
 | Model not found | Run `python train_model.py` first |
-| Port 5000 in use | Change port in `app.py` last line or kill existing process |
+| Port 5000 in use | Change port in `app.py` or kill existing process |
+| CSRF token error | Refresh page and clear browser cookies |
 
-## MongoDB Collections
+## 📚 Documentation
 
-- **users**: `{username, email, password (hashed), created_at}`
-- **predictions**: `{user_id, input_data, result, probability, tips, timestamp}`
+- **DOCUMENTATION.md**: Complete technical documentation
+- **Academic Report**: Formal project report (Word document)
+- **Code Comments**: Inline documentation throughout codebase
+- **API Endpoints**: RESTful endpoints for data access
+
+## 🌍 Database Collections
+
+- **users**: User accounts with encrypted passwords
+- **predictions**: Health assessment history with timestamps
+- **password_resets**: OTP tokens for password recovery
+- **login_attempts**: Failed login tracking for security
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📜 License
+
+This project is developed for educational purposes. Not for medical diagnosis.
+
+**⚠️ Disclaimer**: This application provides AI-based risk assessment and is NOT a substitute for professional medical diagnosis. Always consult qualified healthcare professionals for medical advice.
+
+## 👥 Team
+
+- **K. Kiran Kumar** (223J1A4496)
+- **K. Yamuna** (223J1A4483)  
+- **L. Ganesh** (223J1A44A2)
+
+**Guide**: Mrs D. Hima Bindu, M.Tech (Ph.D.)  
+**Institution**: Raghu Engineering College (Autonomous)  
+**Department**: Computer Science and Engineering (AI & ML)
+
+---
+
+⭐ **Star this repository if you found it helpful!**
