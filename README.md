@@ -70,7 +70,7 @@ A full-stack web application that predicts disease risk using AI-powered analysi
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/Kirankottapu/Healthcare-Data-Analysis-is-Using-Visualization-and-Predictive-Models.git
+git clone https://github.com/Jyothika2406/Healthcare-Data-Analysis-is-Using-Visualization-and-Predictive-Models.git
 cd Healthcare-Data-Analysis-is-Using-Visualization-and-Predictive-Models
 ```
 
@@ -198,19 +198,15 @@ python app.py
 
 ## 📜 License
 
-This project is developed for educational purposes. Not for medical diagnosis.
+This project is developed for educational and research purposes.
 
 **⚠️ Disclaimer**: This application provides AI-based risk assessment and is NOT a substitute for professional medical diagnosis. Always consult qualified healthcare professionals for medical advice.
 
-## 👥 Team
+## 👩‍💻 Developer
 
-- **K. Kiran Kumar** (223J1A4496)
-- **K. Yamuna** (223J1A4483)  
-- **L. Ganesh** (223J1A44A2)
+Developed by **Jyothika** — passionate about leveraging AI and data science for healthcare innovation.
 
-**Guide**: Mrs D. Hima Bindu, M.Tech (Ph.D.)  
-**Institution**: Raghu Engineering College (Autonomous)  
-**Department**: Computer Science and Engineering (AI & ML)
+- GitHub: [@Jyothika2406](https://github.com/Jyothika2406)
 
 ---
 
