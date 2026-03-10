@@ -208,7 +208,7 @@ This project is developed for educational purposes. Not for medical diagnosis.
 - **K. Yamuna** (223J1A4483)  
 - **L. Ganesh** (223J1A44A2)
 
-**Guide**: Mrs D. Hima Bindu, M.Tech (Ph.D.)  
+**Guide**: Mr.G.Venkata Swamy, Assistant Professor 
 **Institution**: Raghu Engineering College (Autonomous)  
 **Department**: Computer Science and Engineering (AI & ML)
 
