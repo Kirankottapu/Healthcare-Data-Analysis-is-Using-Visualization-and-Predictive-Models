@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Data Analysis | Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('home') }}" class="navbar-brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+                HealthAI
+            </a>
+            <ul class="navbar-nav">
+                <li><a href="{{ url_for('home') }}" class="active">Home</a></li>
+                <li><a href="{{ url_for('login') }}" class="btn btn-outline btn-sm">Login</a></li>
+                <li><a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">Register</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ── Flash Messages ── -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-2">
+        <div class="flash-messages">
+            {% for cat, msg in messages %}
+            <div class="alert alert-{{ cat }}">
+                {{ msg }}
+                <button class="alert-close">&times;</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- ── Hero Section ── -->
+    <section class="hero">
+        <div class="container">
+            <h1>Healthcare Data Analysis</h1>
+            <h1 style="font-size:1.6rem; font-weight:600; opacity:0.95; margin-bottom:12px;">
+                Using Visualization &amp; Predictive Models
+            </h1>
+            <p>
+                Predict disease risk using AI-powered analysis and interactive visual dashboards.
+                Publicly available healthcare datasets are analyzed using advanced data visualization
+                and machine learning to support early risk detection, trend analysis, and proactive
+                intervention strategies.
+            </p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('login') }}" class="btn btn-light btn-lg">Login</a>
+                <a href="{{ url_for('register') }}" class="btn btn-outline-light btn-lg">Register</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Abstract / About Section ── -->
+    <section style="padding:60px 0; background:white;">
+        <div class="container" style="max-width:900px;">
+            <h2 class="text-center" style="font-size:1.8rem; font-weight:700; margin-bottom:20px;">About This Project</h2>
+            <p style="color:var(--gray); line-height:1.8; text-align:justify;">
+                With the rapid growth of digital healthcare systems, large volumes of medical data are continuously generated
+                from patient records, clinical reports, laboratory results, imaging studies, and health monitoring devices.
+                Analyzing this complex data using traditional methods is often challenging, time-consuming, and prone to errors,
+                which can limit the ability of healthcare professionals and organizations to make effective and timely decisions.
+                <strong>Data visualization and predictive analytics</strong> play a vital role in transforming these datasets
+                into meaningful insights that support better understanding, early risk detection, and proactive intervention strategies.
+            </p>
+            <p style="color:var(--gray); line-height:1.8; text-align:justify; margin-top:12px;">
+                This project focuses on systematically analyzing healthcare datasets and presenting the results through
+                <strong>interactive visual dashboards integrated with predictive models</strong>. Advanced data visualization
+                techniques represent historical health information in a clear and intuitive manner, while predictive models
+                developed using machine learning forecast future health trends, patient outcomes, and potential risks.
+                By combining visualization and predictive analytics in a single platform, the system enhances data-driven
+                decision-making, improves accessibility of healthcare analytics, and empowers professionals to implement
+                more effective patient care strategies.
+            </p>
+            <div style="margin-top:20px; display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
+                <span class="badge" style="background:#e8f0fe; color:#0d6efd; padding:6px 14px;">Healthcare Analytics</span>
+                <span class="badge" style="background:#d1f5e0; color:#198754; padding:6px 14px;">Predictive Models</span>
+                <span class="badge" style="background:#fde8e8; color:#dc3545; padding:6px 14px;">Risk Prediction</span>
+                <span class="badge" style="background:#fff3cd; color:#997a00; padding:6px 14px;">Machine Learning</span>
+                <span class="badge" style="background:#cff4fc; color:#055160; padding:6px 14px;">Interactive Visualization</span>
+                <span class="badge" style="background:#e8f0fe; color:#0d6efd; padding:6px 14px;">Decision Support</span>
+                <span class="badge" style="background:#d1f5e0; color:#198754; padding:6px 14px;">Trend Analysis</span>
+                <span class="badge" style="background:#fde8e8; color:#dc3545; padding:6px 14px;">Model Evaluation</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Features Section ── -->
+    <section class="features">
+        <div class="container">
+            <h2 class="text-center" style="font-size:2rem; font-weight:700;">How It Works</h2>
+            <p class="text-center" style="color:var(--gray); max-width:600px; margin:8px auto 0;">
+                A comprehensive platform for healthcare data analysis, visualization, and risk prediction
+            </p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>Data Collection &amp; Input</h3>
+                    <p>Publicly available healthcare datasets are collected and processed. Users enter health parameters like BP, sugar, BMI, and lifestyle habits.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>ML-Powered Prediction</h3>
+                    <p>Random Forest classifier performs feature selection, pattern recognition, and risk prediction with Accuracy, Precision, Recall &amp; F1-Score evaluation.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Interactive Visualization</h3>
+                    <p>Chart.js and Tableau dashboards present health trends, risk distributions, and analytics in clear, interactive visual formats.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏥</div>
+                    <h3>Clinical Decision Support</h3>
+                    <p>Health tips, risk levels, probability scores, and downloadable reports empower professionals for better patient care strategies.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Trend &amp; History Tracking</h3>
+                    <p>Track prediction history over time, identify health trends, correlations, and potential risk indicators from past analyses.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure &amp; Accessible</h3>
+                    <p>Bcrypt password hashing, OTP-based password recovery, and a responsive web-based interface for real-time interaction.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Tech Stack Section ── -->
+    <section style="padding:60px 0; background:var(--light);">
+        <div class="container text-center">
+            <h2 style="font-size:1.8rem; font-weight:700; margin-bottom:30px;">Technology Stack</h2>
+            <div style="display:flex; gap:40px; justify-content:center; flex-wrap:wrap; color:var(--gray); font-size:1.05rem;">
+                <div><strong>🐍 Python Flask</strong><br>Backend Server</div>
+                <div><strong>🧠 Scikit-learn</strong><br>Machine Learning</div>
+                <div><strong>🍃 MongoDB</strong><br>NoSQL Database</div>
+                <div><strong>📈 Chart.js</strong><br>Web Visualization</div>
+                <div><strong>📊 Tableau</strong><br>Dashboard Analytics</div>
+                <div><strong>🎨 HTML/CSS/JS</strong><br>Responsive Frontend</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Healthcare Data Analysis | AI-Powered Health Risk Assessment</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

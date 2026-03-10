@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Analytics | HealthAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('dashboard') }}" class="sidebar-brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <span class="sidebar-section-label">Main Menu</span>
+            <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="sidebar-icon">🏠</span><span>Dashboard</span></a>
+            <a href="{{ url_for('health_form') }}" class="sidebar-link"><span class="sidebar-icon">📝</span><span>Health Form</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Tools</span>
+            <a href="{{ url_for('analytics') }}" class="sidebar-link active"><span class="sidebar-icon">📊</span><span>Analytics</span></a>
+            <a href="{{ url_for('bmi_calculator') }}" class="sidebar-link"><span class="sidebar-icon">⚖️</span><span>BMI Calculator</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Account</span>
+            <a href="{{ url_for('history') }}" class="sidebar-link"><span class="sidebar-icon">📚</span><span>History</span></a>
+            <a href="{{ url_for('profile') }}" class="sidebar-link"><span class="sidebar-icon">👤</span><span>My Profile</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-user"><span class="sidebar-icon">👋</span><span>{{ session['username']|capitalize }}</span></div>
+            <a href="{{ url_for('logout') }}" class="sidebar-link sidebar-logout"><span class="sidebar-icon">🚪</span><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <button class="navbar-toggle" onclick="openSidebar()" title="Open Sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="{{ url_for('dashboard') }}" class="nav-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a></li>
+                <li><a href="{{ url_for('health_form') }}" class="nav-link">Health Form</a></li>
+                <li><a href="{{ url_for('analytics') }}" class="nav-link active">Analytics</a></li>
+                <li><a href="{{ url_for('bmi_calculator') }}" class="nav-link">BMI</a></li>
+                <li><a href="{{ url_for('history') }}" class="nav-link">History</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleDarkMode()">🌙</button>
+                <a href="{{ url_for('profile') }}" class="nav-user">👤 {{ session['username']|capitalize }}</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-2">
+        <div class="flash-messages">
+            {% for cat, msg in messages %}
+            <div class="alert alert-{{ cat }}">{{ msg }}<button class="alert-close">&times;</button></div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="page-header">
+                <h1>📊 Advanced Analytics</h1>
+                <p>Comprehensive visual analysis of your health prediction data</p>
+            </div>
+
+            <!-- Statistics Summary Row -->
+            <div class="stat-row">
+                <div class="stat-item">
+                    <span class="stat-label">Total Predictions</span>
+                    <span class="stat-value" id="stat-total">--</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Avg Blood Pressure</span>
+                    <span class="stat-value" id="stat-avg-bp">--</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Avg Sugar Level</span>
+                    <span class="stat-value" id="stat-avg-sugar">--</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Avg BMI</span>
+                    <span class="stat-value" id="stat-avg-bmi">--</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Avg Health Score</span>
+                    <span class="stat-value" id="stat-avg-score">--</span>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="analytics-grid">
+                <div class="card chart-card">
+                    <div class="card-header"><h3>🎯 Risk Distribution</h3></div>
+                    <div class="card-body chart-container">
+                        <canvas id="analyticsRiskChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card chart-card">
+                    <div class="card-header"><h3>💓 Blood Pressure Trend</h3></div>
+                    <div class="card-body chart-container">
+                        <canvas id="analyticsBPChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card chart-card">
+                    <div class="card-header"><h3>🍬 Sugar Level Trend</h3></div>
+                    <div class="card-body chart-container">
+                        <canvas id="analyticsSugarChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card chart-card">
+                    <div class="card-header"><h3>⚖️ BMI Trend</h3></div>
+                    <div class="card-body chart-container">
+                        <canvas id="analyticsBMIChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card chart-card">
+                    <div class="card-header"><h3>📈 Health Score Over Time</h3></div>
+                    <div class="card-body chart-container">
+                        <canvas id="analyticsScoreChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card chart-card">
+                    <div class="card-header"><h3>🕸️ Lifestyle Radar</h3></div>
+                    <div class="card-body chart-container">
+                        <canvas id="analyticsLifestyleChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-3" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <a href="{{ url_for('health_form') }}" class="btn btn-primary">📝 New Prediction</a>
+                <a href="{{ url_for('history') }}" class="btn btn-outline">📚 View History</a>
+                <a href="{{ url_for('export_csv') }}" class="btn btn-secondary">📥 Export CSV</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container"><p>&copy; 2026 Healthcare Data Analysis | AI-Powered Health Risk Assessment</p></div>
+    </footer>
+
+    <button class="scroll-top" id="scroll-top-btn">↑</button>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAnalyticsCharts();
+        });
+    </script>
+</body>
+</html>

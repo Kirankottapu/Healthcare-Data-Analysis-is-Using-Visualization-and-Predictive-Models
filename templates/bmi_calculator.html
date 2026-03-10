@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>BMI & Health Score Calculator | HealthAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('dashboard') }}" class="sidebar-brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <span class="sidebar-section-label">Main Menu</span>
+            <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="sidebar-icon">🏠</span><span>Dashboard</span></a>
+            <a href="{{ url_for('health_form') }}" class="sidebar-link"><span class="sidebar-icon">📝</span><span>Health Form</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Tools</span>
+            <a href="{{ url_for('analytics') }}" class="sidebar-link"><span class="sidebar-icon">📊</span><span>Analytics</span></a>
+            <a href="{{ url_for('bmi_calculator') }}" class="sidebar-link active"><span class="sidebar-icon">⚖️</span><span>BMI Calculator</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Account</span>
+            <a href="{{ url_for('history') }}" class="sidebar-link"><span class="sidebar-icon">📚</span><span>History</span></a>
+            <a href="{{ url_for('profile') }}" class="sidebar-link"><span class="sidebar-icon">👤</span><span>My Profile</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-user"><span class="sidebar-icon">👋</span><span>{{ session['username']|capitalize }}</span></div>
+            <a href="{{ url_for('logout') }}" class="sidebar-link sidebar-logout"><span class="sidebar-icon">🚪</span><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <button class="navbar-toggle" onclick="openSidebar()" title="Open Sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="{{ url_for('dashboard') }}" class="nav-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a></li>
+                <li><a href="{{ url_for('health_form') }}" class="nav-link">Health Form</a></li>
+                <li><a href="{{ url_for('analytics') }}" class="nav-link">Analytics</a></li>
+                <li><a href="{{ url_for('bmi_calculator') }}" class="nav-link active">BMI</a></li>
+                <li><a href="{{ url_for('history') }}" class="nav-link">History</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleDarkMode()">🌙</button>
+                <a href="{{ url_for('profile') }}" class="nav-user">👤 {{ session['username']|capitalize }}</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-2">
+        <div class="flash-messages">
+            {% for cat, msg in messages %}
+            <div class="alert alert-{{ cat }}">{{ msg }}<button class="alert-close">&times;</button></div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="page-header">
+                <h1>⚖️ BMI & Health Score Calculator</h1>
+                <p>Calculate your Body Mass Index and get an instant health score assessment</p>
+            </div>
+
+            <!-- BMI Calculator Form — centered -->
+            <div class="bmi-card" style="max-width:700px;margin:0 auto;">
+                <div class="card-header">
+                    <h3>📐 Calculate BMI & Health Score</h3>
+                </div>
+                <div class="card-body">
+                    <form id="bmiCalcForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="calc-height">Height (cm)</label>
+                                <input type="number" id="calc-height" class="form-control"
+                                       placeholder="e.g. 170" min="100" max="250" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="calc-weight">Weight (kg)</label>
+                                <input type="number" id="calc-weight" class="form-control"
+                                       placeholder="e.g. 70" min="20" max="300" step="0.1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="calc-age">Age</label>
+                                <input type="number" id="calc-age" class="form-control"
+                                       placeholder="e.g. 35" min="1" max="120" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="calc-bp">Blood Pressure (systolic)</label>
+                                <input type="number" id="calc-bp" class="form-control"
+                                       placeholder="e.g. 120" min="60" max="250" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="calc-sugar">Sugar Level (mg/dL)</label>
+                                <input type="number" id="calc-sugar" class="form-control"
+                                       placeholder="e.g. 100" min="30" max="500" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="calc-smoking">Smoking</label>
+                                <select id="calc-smoking" class="form-control">
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="calc-exercise">Regular Exercise</label>
+                                <select id="calc-exercise" class="form-control">
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="calc-alcohol">Alcohol Consumption</label>
+                                <select id="calc-alcohol" class="form-control">
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Calculate BMI & Health Score</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results — shown below the form after calculation -->
+            <div class="grid-2 mt-3">
+                <!-- BMI Result -->
+                <div class="bmi-card" id="bmi-result-section" style="display:none;">
+                    <div class="card-header">
+                        <h3>📊 Your BMI Result</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="bmi-result">
+                            <span class="bmi-result-value" id="bmi-result-value">--</span>
+                            <span class="bmi-result-category" id="bmi-result-category">--</span>
+                        </div>
+                        <div class="bmi-scale">
+                            <div class="bmi-scale-bar">
+                                <div class="bmi-indicator" id="bmi-indicator"></div>
+                            </div>
+                            <div class="bmi-scale-labels">
+                                <span>Underweight<br>&lt;18.5</span>
+                                <span>Normal<br>18.5-24.9</span>
+                                <span>Overweight<br>25-29.9</span>
+                                <span>Obese<br>30+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Score Result -->
+                <div class="bmi-card" id="health-score-section" style="display:none;">
+                    <div class="card-header">
+                        <h3>🏥 Your Health Score</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="health-score-widget">
+                            <div class="score-circle" id="health-score-circle">
+                                <span class="score-number" id="health-score-value">--</span>
+                                <span class="score-label">/ 100</span>
+                            </div>
+                            <div class="score-grade" id="health-score-grade">--</div>
+                        </div>
+                        <div id="health-tips" class="mt-2" style="text-align:left;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BMI Reference Chart -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h3>📋 BMI Reference Chart</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>BMI Range</th>
+                                    <th>Health Risk</th>
+                                    <th>Recommendation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="badge" style="background:#3498db;color:#fff;">Underweight</span></td>
+                                    <td>&lt; 18.5</td>
+                                    <td>Moderate</td>
+                                    <td>Consider increasing caloric intake with nutrient-dense foods</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge" style="background:#27ae60;color:#fff;">Normal</span></td>
+                                    <td>18.5 - 24.9</td>
+                                    <td>Low</td>
+                                    <td>Maintain a balanced diet and regular exercise</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge" style="background:#f39c12;color:#fff;">Overweight</span></td>
+                                    <td>25.0 - 29.9</td>
+                                    <td>Increased</td>
+                                    <td>Consider dietary modifications and increased physical activity</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge" style="background:#e74c3c;color:#fff;">Obese</span></td>
+                                    <td>30.0+</td>
+                                    <td>High</td>
+                                    <td>Consult a healthcare provider for a management plan</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline">← Back to Dashboard</a>
+                <a href="{{ url_for('health_form') }}" class="btn btn-primary" style="margin-left:12px;">📝 Full Health Prediction</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container"><p>&copy; 2026 Healthcare Data Analysis | AI-Powered Health Risk Assessment</p></div>
+    </footer>
+
+    <button class="scroll-top" id="scroll-top-btn">↑</button>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

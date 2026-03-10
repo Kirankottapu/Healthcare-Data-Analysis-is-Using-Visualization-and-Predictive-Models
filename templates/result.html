@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result | HealthAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('dashboard') }}" class="sidebar-brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <span class="sidebar-section-label">Main Menu</span>
+            <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="sidebar-icon">🏠</span><span>Dashboard</span></a>
+            <a href="{{ url_for('health_form') }}" class="sidebar-link active"><span class="sidebar-icon">📝</span><span>Health Form</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Tools</span>
+            <a href="{{ url_for('analytics') }}" class="sidebar-link"><span class="sidebar-icon">📊</span><span>Analytics</span></a>
+            <a href="{{ url_for('bmi_calculator') }}" class="sidebar-link"><span class="sidebar-icon">⚖️</span><span>BMI Calculator</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Account</span>
+            <a href="{{ url_for('history') }}" class="sidebar-link"><span class="sidebar-icon">📚</span><span>History</span></a>
+            <a href="{{ url_for('profile') }}" class="sidebar-link"><span class="sidebar-icon">👤</span><span>My Profile</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-user"><span class="sidebar-icon">👋</span><span>{{ session['username']|capitalize }}</span></div>
+            <a href="{{ url_for('logout') }}" class="sidebar-link sidebar-logout"><span class="sidebar-icon">🚪</span><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <button class="navbar-toggle" onclick="openSidebar()" title="Open Sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="{{ url_for('dashboard') }}" class="nav-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a></li>
+                <li><a href="{{ url_for('health_form') }}" class="nav-link active">Health Form</a></li>
+                <li><a href="{{ url_for('analytics') }}" class="nav-link">Analytics</a></li>
+                <li><a href="{{ url_for('bmi_calculator') }}" class="nav-link">BMI</a></li>
+                <li><a href="{{ url_for('history') }}" class="nav-link">History</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleDarkMode()">🌙</button>
+                <a href="{{ url_for('profile') }}" class="nav-user">👤 {{ session['username']|capitalize }}</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Result Hero -->
+    <section class="result-hero {{ 'high-risk' if result == 'High Risk' else 'low-risk' }}">
+        <div class="container">
+            <div style="margin-bottom:8px;">
+                <span class="badge {{ 'badge-heart' if disease_type == 'heart' else 'badge-diabetes' }}"
+                      style="font-size:1rem;padding:6px 20px;background:rgba(255,255,255,0.2);color:white;">
+                    {{ disease_name }} Assessment
+                </span>
+            </div>
+            <div class="result-badge">
+                {% if result == 'High Risk' %}⚠️{% else %}✅{% endif %} {{ result }}
+            </div>
+            <div class="probability-display">{{ probability }}%</div>
+            <p style="opacity:0.9;font-size:1.1rem;">Risk Probability Score</p>
+            <p style="opacity:0.7;margin-top:8px;">Analyzed on {{ timestamp }}</p>
+        </div>
+    </section>
+
+    <!-- Health Score Banner -->
+    <section style="padding:20px 0;background:var(--bg-card);border-bottom:1px solid var(--border-color);">
+        <div class="container" style="display:flex;gap:30px;justify-content:center;align-items:center;flex-wrap:wrap;">
+            <div style="text-align:center;">
+                <div style="font-size:2rem;font-weight:800;color:{{ '#198754' if health_score >= 70 else '#ffc107' if health_score >= 50 else '#dc3545' }};">
+                    {{ health_score }}/100
+                </div>
+                <div style="font-size:0.9rem;color:var(--text-secondary);">Health Score</div>
+            </div>
+            <div style="text-align:center;">
+                <div style="font-size:2rem;font-weight:800;color:var(--primary);">{{ health_grade }}</div>
+                <div style="font-size:0.9rem;color:var(--text-secondary);">{{ health_desc }}</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Result Details -->
+    <section class="result-section">
+        <div class="container">
+            <div class="result-grid">
+                <div class="result-card">
+                    <h3>🥧 Risk Breakdown</h3>
+                    <div class="chart-container" style="height:250px;">
+                        <canvas id="resultRiskChart"></canvas>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <h3>📊 Your Health Values vs Normal</h3>
+                    <div class="chart-container" style="height:250px;">
+                        <canvas id="resultBarChart"></canvas>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <h3>📋 Input Summary</h3>
+                    <table class="input-summary">
+                        <tr><td>Disease Type</td><td><span class="badge {{ 'badge-heart' if disease_type == 'heart' else 'badge-diabetes' }}">{{ disease_name }}</span></td></tr>
+                        <tr><td>Age</td><td>{{ input_data.age }}</td></tr>
+                        <tr><td>Gender</td><td>{{ input_data.gender }}</td></tr>
+                        <tr><td>Blood Pressure</td><td>{{ input_data.blood_pressure }} mm Hg</td></tr>
+                        <tr><td>Sugar Level</td><td>{{ input_data.sugar_level }} mg/dl</td></tr>
+                        <tr><td>Height</td><td>{{ input_data.height }} cm</td></tr>
+                        <tr><td>Weight</td><td>{{ input_data.weight }} kg</td></tr>
+                        <tr><td>BMI</td><td>{{ input_data.bmi }}</td></tr>
+                        <tr><td>Smoking</td><td>{{ 'Yes' if input_data.smoking else 'No' }}</td></tr>
+                        <tr><td>Exercise</td><td>{{ 'Yes' if input_data.exercise else 'No' }}</td></tr>
+                        <tr><td>Alcohol</td><td>{{ 'Yes' if input_data.alcohol else 'No' }}</td></tr>
+                        {% if input_data.symptoms %}<tr><td>Symptoms</td><td>{{ input_data.symptoms }}</td></tr>{% endif %}
+                    </table>
+                </div>
+                <div class="result-card">
+                    <h3>💡 Health Tips &amp; Recommendations</h3>
+                    <ul class="tips-list">
+                        {% for tip in tips %}<li>{{ tip }}</li>{% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-center mt-4" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+                <a href="{{ url_for('health_form') }}" class="btn btn-primary">📝 New Prediction</a>
+                <a href="{{ url_for('analytics') }}" class="btn btn-secondary">📊 Analytics</a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline">📊 Dashboard</a>
+                <a href="{{ url_for('history') }}" class="btn btn-outline">📚 View History</a>
+            </div>
+
+            <div class="text-center mt-4" style="padding:20px;background:#fff3cd;border-radius:var(--radius);max-width:600px;margin:30px auto 0;">
+                <p style="color:#664d03;font-size:0.9rem;">
+                    <strong>⚠️ Disclaimer:</strong> This is an AI-based risk assessment and NOT a medical diagnosis.
+                    Please consult a qualified healthcare professional for proper medical advice.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container"><p>&copy; 2026 Healthcare Data Analysis | AI-Powered Health Risk Assessment</p></div>
+    </footer>
+
+    <button class="scroll-top" id="scroll-top-btn">↑</button>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initResultCharts(
+                { age: {{ input_data.age }}, blood_pressure: {{ input_data.blood_pressure }}, sugar_level: {{ input_data.sugar_level }}, bmi: {{ input_data.bmi }} },
+                {{ probability }}, '{{ result }}'
+            );
+        });
+    </script>
+</body>
+</html>

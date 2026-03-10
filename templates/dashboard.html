@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | HealthAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('dashboard') }}" class="sidebar-brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <span class="sidebar-section-label">Main Menu</span>
+            <a href="{{ url_for('dashboard') }}" class="sidebar-link active"><span class="sidebar-icon">🏠</span><span>Dashboard</span></a>
+            <a href="{{ url_for('health_form') }}" class="sidebar-link"><span class="sidebar-icon">📝</span><span>Health Form</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Tools</span>
+            <a href="{{ url_for('analytics') }}" class="sidebar-link"><span class="sidebar-icon">📊</span><span>Analytics</span></a>
+            <a href="{{ url_for('bmi_calculator') }}" class="sidebar-link"><span class="sidebar-icon">⚖️</span><span>BMI Calculator</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Account</span>
+            <a href="{{ url_for('history') }}" class="sidebar-link"><span class="sidebar-icon">📚</span><span>History</span></a>
+            <a href="{{ url_for('profile') }}" class="sidebar-link"><span class="sidebar-icon">👤</span><span>My Profile</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-user"><span class="sidebar-icon">👋</span><span>{{ session['username']|capitalize }}</span></div>
+            <a href="{{ url_for('logout') }}" class="sidebar-link sidebar-logout"><span class="sidebar-icon">🚪</span><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <button class="navbar-toggle" onclick="openSidebar()" title="Open Sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="{{ url_for('dashboard') }}" class="nav-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('dashboard') }}" class="nav-link active">Dashboard</a></li>
+                <li><a href="{{ url_for('health_form') }}" class="nav-link">Health Form</a></li>
+                <li><a href="{{ url_for('analytics') }}" class="nav-link">Analytics</a></li>
+                <li><a href="{{ url_for('bmi_calculator') }}" class="nav-link">BMI</a></li>
+                <li><a href="{{ url_for('history') }}" class="nav-link">History</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleDarkMode()">🌙</button>
+                <a href="{{ url_for('profile') }}" class="nav-user">👤 {{ session['username']|capitalize }}</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-2">
+        <div class="flash-messages">
+            {% for cat, msg in messages %}
+            <div class="alert alert-{{ cat }}">{{ msg }}<button class="alert-close">&times;</button></div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+                <div>
+                    <h1>Welcome, {{ username }} 👋</h1>
+                    <p>Analyze your health data and predict possible risks</p>
+                </div>
+                <div class="security-badge">🔒 Secure Session Active</div>
+            </div>
+
+            <!-- Health Score + Summary Cards -->
+            <div style="display:grid;grid-template-columns:1fr 3fr;gap:24px;margin-bottom:30px;">
+                <!-- Health Score Widget -->
+                <div class="health-score-widget">
+                    <div class="score-circle {{ 'excellent' if avg_health_score >= 80 else 'good' if avg_health_score >= 60 else 'fair' if avg_health_score >= 40 else 'poor' }}">
+                        {{ avg_health_score }}
+                        <span class="score-grade">/ 100</span>
+                    </div>
+                    <div class="score-label">Health Score</div>
+                    <div class="score-desc">Grade: {{ health_grade }} – {{ health_desc }}</div>
+                    {% if last_login %}
+                    <p style="margin-top:12px;font-size:0.82rem;color:var(--text-secondary);">
+                        Last login: {{ last_login.strftime('%b %d, %H:%M') }}
+                    </p>
+                    {% endif %}
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="summary-cards" style="margin-bottom:0;">
+                    <div class="summary-card blue">
+                        <div class="card-icon">📊</div>
+                        <div class="card-value">{{ total_predictions }}</div>
+                        <div class="card-label">Total Predictions</div>
+                    </div>
+                    <div class="summary-card green">
+                        <div class="card-icon">✅</div>
+                        <div class="card-value">{{ low_risk_count }}</div>
+                        <div class="card-label">Low Risk Results</div>
+                    </div>
+                    <div class="summary-card red">
+                        <div class="card-icon">⚠️</div>
+                        <div class="card-value">{{ high_risk_count }}</div>
+                        <div class="card-label">High Risk Results</div>
+                    </div>
+                    <div class="summary-card yellow">
+                        <div class="card-icon">📅</div>
+                        <div class="card-value">
+                            {% if last_prediction %}{{ last_prediction.timestamp.strftime('%b %d') }}{% else %}N/A{% endif %}
+                        </div>
+                        <div class="card-label">Last Analysis</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Cards -->
+            <div class="action-cards">
+                <a href="{{ url_for('health_form') }}" class="action-card">
+                    <div class="action-icon">📝</div>
+                    <h3>Health Prediction</h3>
+                    <p>Enter health data for Heart Disease or Diabetes risk assessment</p>
+                </a>
+                <a href="{{ url_for('analytics') }}" class="action-card">
+                    <div class="action-icon">📊</div>
+                    <h3>Advanced Analytics</h3>
+                    <p>View detailed charts, trends, and comparative analysis</p>
+                </a>
+                <a href="{{ url_for('bmi_calculator') }}" class="action-card">
+                    <div class="action-icon">⚖️</div>
+                    <h3>BMI &amp; Health Score</h3>
+                    <p>Calculate BMI and get your comprehensive health score</p>
+                </a>
+                <a href="{{ url_for('history') }}" class="action-card">
+                    <div class="action-icon">📚</div>
+                    <h3>Prediction History</h3>
+                    <p>View history, search, filter, and export as CSV</p>
+                </a>
+                <a href="{{ url_for('profile') }}" class="action-card">
+                    <div class="action-icon">👤</div>
+                    <h3>Your Profile</h3>
+                    <p>Manage account, change password, update settings</p>
+                </a>
+            </div>
+
+            {% if total_predictions > 0 %}
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>📊 Risk Distribution</h3>
+                    <div class="chart-container" style="height:280px;">
+                        <canvas id="riskPieChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>📈 Risk Probability Timeline</h3>
+                    <div class="chart-container" style="height:280px;">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h3>No Predictions Yet</h3>
+                <p>Start by entering your health details to get your first risk assessment.</p>
+                <a href="{{ url_for('health_form') }}" class="btn btn-primary">Enter Health Data</a>
+            </div>
+            {% endif %}
+
+            {% if last_prediction %}
+            <div class="chart-card mt-3">
+                <h3>🔍 Last Prediction Result</h3>
+                <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+                    <span class="badge {{ 'badge-high' if last_prediction.result == 'High Risk' else 'badge-low' }}"
+                          style="font-size:1rem;padding:8px 20px;">{{ last_prediction.result }}</span>
+                    <span class="badge {{ 'badge-heart' if last_prediction.get('disease_type','heart') == 'heart' else 'badge-diabetes' }}"
+                          style="font-size:0.9rem;padding:6px 16px;">{{ last_prediction.get('disease_name', 'Heart Disease') }}</span>
+                    <span style="font-size:1.2rem;font-weight:700;">{{ last_prediction.probability }}% probability</span>
+                    <span style="color:var(--text-secondary);">{{ last_prediction.timestamp.strftime('%B %d, %Y at %H:%M') }}</span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container"><p>&copy; 2026 Healthcare Data Analysis | AI-Powered Health Risk Assessment</p></div>
+    </footer>
+
+    <button class="scroll-top" id="scroll-top-btn">↑</button>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

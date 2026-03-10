@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | HealthAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-card">
+            <h2>Create Account</h2>
+            <p class="subtitle">Join HealthAI for free health risk analysis</p>
+
+            <!-- ── Flash Messages ── -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for cat, msg in messages %}
+                <div class="alert alert-{{ cat }}">
+                    {{ msg }}
+                    <button class="alert-close">&times;</button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('register') }}" method="POST">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-control"
+                           placeholder="Choose a username" required autofocus minlength="3">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control"
+                           placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control"
+                           placeholder="Create a password (min 6 chars)" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control"
+                           placeholder="Confirm your password" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block btn-lg mt-2">Register</button>
+            </form>
+
+            <p class="text-center mt-3" style="color:var(--gray);">
+                Already have an account?
+                <a href="{{ url_for('login') }}" style="font-weight:600;">Login here</a>
+            </p>
+            <p class="text-center mt-1">
+                <a href="{{ url_for('home') }}" style="color:var(--gray); font-size:0.9rem;">&larr; Back to Home</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

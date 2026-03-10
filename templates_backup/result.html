@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result | HealthAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('dashboard') }}" class="navbar-brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+                HealthAI
+            </a>
+            <ul class="navbar-nav">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('health_form') }}">Health Form</a></li>
+                <li><a href="{{ url_for('history') }}">History</a></li>
+                <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                <li><a href="{{ url_for('logout') }}" class="btn btn-danger btn-sm">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ── Result Hero ── -->
+    <section class="result-hero {{ 'high-risk' if result == 'High Risk' else 'low-risk' }}">
+        <div class="container">
+            <div class="result-badge">
+                {% if result == 'High Risk' %}⚠️{% else %}✅{% endif %}
+                {{ result }}
+            </div>
+            <div class="probability-display">{{ probability }}%</div>
+            <p style="opacity:0.9; font-size:1.1rem;">Risk Probability Score</p>
+            <p style="opacity:0.7; margin-top:8px;">Analyzed on {{ timestamp }}</p>
+        </div>
+    </section>
+
+    <!-- ── Result Details ── -->
+    <section class="result-section">
+        <div class="container">
+            <div class="result-grid">
+
+                <!-- Risk Pie Chart -->
+                <div class="result-card">
+                    <h3>🥧 Risk Breakdown</h3>
+                    <div class="chart-container" style="height:250px;">
+                        <canvas id="resultRiskChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Health Values Bar Chart -->
+                <div class="result-card">
+                    <h3>📊 Your Health Values vs Normal</h3>
+                    <div class="chart-container" style="height:250px;">
+                        <canvas id="resultBarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Input Summary -->
+                <div class="result-card">
+                    <h3>📋 Input Summary</h3>
+                    <table class="input-summary">
+                        <tr><td>Age</td><td>{{ input_data.age }}</td></tr>
+                        <tr><td>Gender</td><td>{{ input_data.gender }}</td></tr>
+                        <tr><td>Blood Pressure</td><td>{{ input_data.blood_pressure }} mm Hg</td></tr>
+                        <tr><td>Sugar Level</td><td>{{ input_data.sugar_level }} mg/dl</td></tr>
+                        <tr><td>Height</td><td>{{ input_data.height }} cm</td></tr>
+                        <tr><td>Weight</td><td>{{ input_data.weight }} kg</td></tr>
+                        <tr><td>BMI</td><td>{{ input_data.bmi }}</td></tr>
+                        <tr><td>Smoking</td><td>{{ 'Yes' if input_data.smoking else 'No' }}</td></tr>
+                        <tr><td>Exercise</td><td>{{ 'Yes' if input_data.exercise else 'No' }}</td></tr>
+                        <tr><td>Alcohol</td><td>{{ 'Yes' if input_data.alcohol else 'No' }}</td></tr>
+                        {% if input_data.symptoms %}
+                        <tr><td>Symptoms</td><td>{{ input_data.symptoms }}</td></tr>
+                        {% endif %}
+                    </table>
+                </div>
+
+                <!-- Health Tips -->
+                <div class="result-card">
+                    <h3>💡 Health Tips & Recommendations</h3>
+                    <ul class="tips-list">
+                        {% for tip in tips %}
+                        <li>{{ tip }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mt-4" style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+                <a href="{{ url_for('health_form') }}" class="btn btn-primary">📝 New Prediction</a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">📊 Dashboard</a>
+                <a href="{{ url_for('history') }}" class="btn btn-outline">📚 View History</a>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="text-center mt-4" style="padding:20px; background:#fff3cd; border-radius:var(--radius); max-width:600px; margin:30px auto 0;">
+                <p style="color:#664d03; font-size:0.9rem;">
+                    <strong>⚠️ Disclaimer:</strong> This is an AI-based risk assessment and NOT a medical diagnosis.
+                    Please consult a qualified healthcare professional for proper medical advice.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Healthcare Data Analysis | AI-Powered Health Risk Assessment</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Initialize result page charts with actual data
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputData = {
+                age: {{ input_data.age }},
+                blood_pressure: {{ input_data.blood_pressure }},
+                sugar_level: {{ input_data.sugar_level }},
+                bmi: {{ input_data.bmi }}
+            };
+            initResultCharts(inputData, {{ probability }}, '{{ result }}');
+        });
+    </script>
+</body>
+</html>

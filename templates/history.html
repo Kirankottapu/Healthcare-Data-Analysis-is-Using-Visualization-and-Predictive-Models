@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction History | HealthAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('dashboard') }}" class="sidebar-brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <span class="sidebar-section-label">Main Menu</span>
+            <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="sidebar-icon">🏠</span><span>Dashboard</span></a>
+            <a href="{{ url_for('health_form') }}" class="sidebar-link"><span class="sidebar-icon">📝</span><span>Health Form</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Tools</span>
+            <a href="{{ url_for('analytics') }}" class="sidebar-link"><span class="sidebar-icon">📊</span><span>Analytics</span></a>
+            <a href="{{ url_for('bmi_calculator') }}" class="sidebar-link"><span class="sidebar-icon">⚖️</span><span>BMI Calculator</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Account</span>
+            <a href="{{ url_for('history') }}" class="sidebar-link active"><span class="sidebar-icon">📚</span><span>History</span></a>
+            <a href="{{ url_for('profile') }}" class="sidebar-link"><span class="sidebar-icon">👤</span><span>My Profile</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-user"><span class="sidebar-icon">👋</span><span>{{ session['username']|capitalize }}</span></div>
+            <a href="{{ url_for('logout') }}" class="sidebar-link sidebar-logout"><span class="sidebar-icon">🚪</span><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <button class="navbar-toggle" onclick="openSidebar()" title="Open Sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="{{ url_for('dashboard') }}" class="nav-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a></li>
+                <li><a href="{{ url_for('health_form') }}" class="nav-link">Health Form</a></li>
+                <li><a href="{{ url_for('analytics') }}" class="nav-link">Analytics</a></li>
+                <li><a href="{{ url_for('bmi_calculator') }}" class="nav-link">BMI</a></li>
+                <li><a href="{{ url_for('history') }}" class="nav-link active">History</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleDarkMode()">🌙</button>
+                <a href="{{ url_for('profile') }}" class="nav-user">👤 {{ session['username']|capitalize }}</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-2">
+        <div class="flash-messages">
+            {% for cat, msg in messages %}
+            <div class="alert alert-{{ cat }}">{{ msg }}<button class="alert-close">&times;</button></div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+                <div>
+                    <h1>📚 Prediction History</h1>
+                    <p>View all your past health risk assessments</p>
+                </div>
+                {% if records %}
+                <a href="{{ url_for('export_csv') }}" class="btn btn-secondary btn-sm">📥 Export CSV</a>
+                {% endif %}
+            </div>
+
+            {% if records %}
+            <!-- Search & Filter Toolbar -->
+            <div class="history-toolbar">
+                <input type="text" id="history-search" class="search-box" placeholder="🔍 Search by date, result, age...">
+                <select id="history-filter">
+                    <option value="all">All Results</option>
+                    <option value="low risk">Low Risk Only</option>
+                    <option value="high risk">High Risk Only</option>
+                </select>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Disease</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>BP</th>
+                            <th>Sugar</th>
+                            <th>BMI</th>
+                            <th>Result</th>
+                            <th>Probability</th>
+                            <th>Score</th>
+                            <th>Report</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in records %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ record.timestamp.strftime('%b %d, %Y %H:%M') }}</td>
+                            <td>
+                                <span class="badge {{ 'badge-heart' if record.get('disease_type','heart') == 'heart' else 'badge-diabetes' }}">
+                                    {{ record.get('disease_name', 'Heart') }}
+                                </span>
+                            </td>
+                            <td>{{ record.input_data.age }}</td>
+                            <td>{{ record.input_data.gender }}</td>
+                            <td>{{ record.input_data.blood_pressure }}</td>
+                            <td>{{ record.input_data.sugar_level }}</td>
+                            <td>{{ record.input_data.bmi }}</td>
+                            <td>
+                                <span class="badge {{ 'badge-high' if record.result == 'High Risk' else 'badge-low' }}">
+                                    {{ record.result }}
+                                </span>
+                            </td>
+                            <td><strong>{{ record.probability }}%</strong></td>
+                            <td>{{ record.get('health_score', 'N/A') }}</td>
+                            <td>
+                                <a href="{{ url_for('download_report', pred_id=record._id) }}"
+                                   class="btn btn-outline btn-sm" title="Download report">📄</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center mt-3" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <a href="{{ url_for('health_form') }}" class="btn btn-primary">📝 New Prediction</a>
+                <a href="{{ url_for('export_csv') }}" class="btn btn-secondary">📥 Download All as CSV</a>
+                <a href="{{ url_for('analytics') }}" class="btn btn-outline">📊 View Analytics</a>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h3>No Predictions Yet</h3>
+                <p>You haven't made any health risk predictions. Start by entering your health details.</p>
+                <a href="{{ url_for('health_form') }}" class="btn btn-primary">Enter Health Data</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container"><p>&copy; 2026 Healthcare Data Analysis | AI-Powered Health Risk Assessment</p></div>
+    </footer>
+
+    <button class="scroll-top" id="scroll-top-btn">↑</button>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

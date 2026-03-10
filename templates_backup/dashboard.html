@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | HealthAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('dashboard') }}" class="navbar-brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+                HealthAI
+            </a>
+            <ul class="navbar-nav">
+                <li><a href="{{ url_for('dashboard') }}" class="active">Dashboard</a></li>
+                <li><a href="{{ url_for('health_form') }}">Health Form</a></li>
+                <li><a href="{{ url_for('history') }}">History</a></li>
+                <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                <li><a href="{{ url_for('logout') }}" class="btn btn-danger btn-sm">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ── Flash Messages ── -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-2">
+        <div class="flash-messages">
+            {% for cat, msg in messages %}
+            <div class="alert alert-{{ cat }}">
+                {{ msg }}
+                <button class="alert-close">&times;</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- ── Page Content ── -->
+    <div class="page-wrapper">
+        <div class="container">
+
+            <!-- Welcome Section -->
+            <div class="page-header">
+                <h1>Welcome, {{ username }} 👋</h1>
+                <p>Analyze your health data and predict possible risks</p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card blue">
+                    <div class="card-icon">📊</div>
+                    <div class="card-value">{{ total_predictions }}</div>
+                    <div class="card-label">Total Predictions</div>
+                </div>
+                <div class="summary-card green">
+                    <div class="card-icon">✅</div>
+                    <div class="card-value">{{ low_risk_count }}</div>
+                    <div class="card-label">Low Risk Results</div>
+                </div>
+                <div class="summary-card red">
+                    <div class="card-icon">⚠️</div>
+                    <div class="card-value">{{ high_risk_count }}</div>
+                    <div class="card-label">High Risk Results</div>
+                </div>
+                <div class="summary-card yellow">
+                    <div class="card-icon">📅</div>
+                    <div class="card-value">
+                        {% if last_prediction %}
+                            {{ last_prediction.timestamp.strftime('%b %d') }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </div>
+                    <div class="card-label">Last Analysis</div>
+                </div>
+            </div>
+
+            <!-- Action Cards -->
+            <div class="action-cards">
+                <a href="{{ url_for('health_form') }}" class="action-card">
+                    <div class="action-icon">📝</div>
+                    <h3>Enter Health Details</h3>
+                    <p>Fill in your health parameters to get a new risk prediction</p>
+                </a>
+                <a href="{{ url_for('history') }}" class="action-card">
+                    <div class="action-icon">📚</div>
+                    <h3>Prediction History</h3>
+                    <p>View all your past predictions and track health changes</p>
+                </a>
+                <a href="{{ url_for('profile') }}" class="action-card">
+                    <div class="action-icon">👤</div>
+                    <h3>Your Profile</h3>
+                    <p>Manage your account details and preferences</p>
+                </a>
+            </div>
+
+            <!-- Charts Section -->
+            {% if total_predictions > 0 %}
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>📊 Risk Distribution</h3>
+                    <div class="chart-container" style="height:280px;">
+                        <canvas id="riskPieChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>📈 Risk Probability Timeline</h3>
+                    <div class="chart-container" style="height:280px;">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h3>No Predictions Yet</h3>
+                <p>Start by entering your health details to get your first risk assessment.</p>
+                <a href="{{ url_for('health_form') }}" class="btn btn-primary">Enter Health Data</a>
+            </div>
+            {% endif %}
+
+            <!-- Last Prediction Quick View -->
+            {% if last_prediction %}
+            <div class="chart-card mt-3">
+                <h3>🔍 Last Prediction Result</h3>
+                <div style="display:flex; gap:20px; flex-wrap:wrap; align-items:center;">
+                    <span class="badge {{ 'badge-high' if last_prediction.result == 'High Risk' else 'badge-low' }}"
+                          style="font-size:1rem; padding:8px 20px;">
+                        {{ last_prediction.result }}
+                    </span>
+                    <span style="font-size:1.2rem; font-weight:700;">
+                        {{ last_prediction.probability }}% probability
+                    </span>
+                    <span style="color:var(--gray);">
+                        {{ last_prediction.timestamp.strftime('%B %d, %Y at %H:%M') }}
+                    </span>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- ── Footer ── -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Healthcare Data Analysis | AI-Powered Health Risk Assessment</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

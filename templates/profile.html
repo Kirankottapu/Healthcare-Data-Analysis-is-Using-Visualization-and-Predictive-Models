@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | HealthAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('dashboard') }}" class="sidebar-brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <span class="sidebar-section-label">Main Menu</span>
+            <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="sidebar-icon">🏠</span><span>Dashboard</span></a>
+            <a href="{{ url_for('health_form') }}" class="sidebar-link"><span class="sidebar-icon">📝</span><span>Health Form</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Tools</span>
+            <a href="{{ url_for('analytics') }}" class="sidebar-link"><span class="sidebar-icon">📊</span><span>Analytics</span></a>
+            <a href="{{ url_for('bmi_calculator') }}" class="sidebar-link"><span class="sidebar-icon">⚖️</span><span>BMI Calculator</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Account</span>
+            <a href="{{ url_for('history') }}" class="sidebar-link"><span class="sidebar-icon">📚</span><span>History</span></a>
+            <a href="{{ url_for('profile') }}" class="sidebar-link active"><span class="sidebar-icon">👤</span><span>My Profile</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-user"><span class="sidebar-icon">👋</span><span>{{ session['username']|capitalize }}</span></div>
+            <a href="{{ url_for('logout') }}" class="sidebar-link sidebar-logout"><span class="sidebar-icon">🚪</span><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <button class="navbar-toggle" onclick="openSidebar()" title="Open Sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="{{ url_for('dashboard') }}" class="nav-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a></li>
+                <li><a href="{{ url_for('health_form') }}" class="nav-link">Health Form</a></li>
+                <li><a href="{{ url_for('analytics') }}" class="nav-link">Analytics</a></li>
+                <li><a href="{{ url_for('bmi_calculator') }}" class="nav-link">BMI</a></li>
+                <li><a href="{{ url_for('history') }}" class="nav-link">History</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleDarkMode()">🌙</button>
+                <a href="{{ url_for('profile') }}" class="nav-user active">👤 {{ session['username']|capitalize }}</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-2">
+        <div class="flash-messages">
+            {% for cat, msg in messages %}
+            <div class="alert alert-{{ cat }}">{{ msg }}<button class="alert-close">&times;</button></div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="page-header">
+                <h1>👤 My Profile</h1>
+                <p>Manage your account settings and security</p>
+            </div>
+
+            <!-- Account Information Card -->
+            <div class="card" style="max-width:620px;margin:0 auto;">
+                <div class="card-header">
+                    <h3>📋 Account Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="profile-avatar">
+                        <div class="avatar-circle">
+                            {{ username[0]|upper if username else 'U' }}
+                        </div>
+                    </div>
+                    <div class="info-group">
+                        <label>Full Name</label>
+                        <p class="info-value">{{ username }}</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Email Address</label>
+                        <p class="info-value">{{ email }}</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Account Created</label>
+                        <p class="info-value">{{ created_at }}</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Last Login</label>
+                        <p class="info-value">
+                            {{ last_login.strftime('%B %d, %Y at %H:%M') if last_login else 'Current session' }}
+                        </p>
+                    </div>
+                    <div class="info-group">
+                        <label>Total Logins</label>
+                        <p class="info-value">{{ login_count }} times</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Total Predictions</label>
+                        <p class="info-value">{{ total_predictions }} predictions made</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Info Card -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h3>🛡️ Security Overview</h3>
+                </div>
+                <div class="card-body">
+                    <div class="security-grid">
+                        <div class="security-item">
+                            <span class="security-icon">✅</span>
+                            <div>
+                                <strong>Password Protected</strong>
+                                <p>Your password is securely hashed with bcrypt</p>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <span class="security-icon">✅</span>
+                            <div>
+                                <strong>CSRF Protection</strong>
+                                <p>All forms are protected against cross-site request forgery</p>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <span class="security-icon">✅</span>
+                            <div>
+                                <strong>Rate Limiting</strong>
+                                <p>Login attempts are limited to prevent brute-force attacks</p>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <span class="security-icon">✅</span>
+                            <div>
+                                <strong>Session Timeout</strong>
+                                <p>Sessions automatically expire after 30 minutes of inactivity</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline">← Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container"><p>&copy; 2026 Healthcare Data Analysis | AI-Powered Health Risk Assessment</p></div>
+    </footer>
+
+    <button class="scroll-top" id="scroll-top-btn">↑</button>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

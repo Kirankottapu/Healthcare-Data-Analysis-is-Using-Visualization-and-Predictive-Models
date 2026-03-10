@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP | HealthAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="{{ url_for('home') }}" class="nav-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}" class="nav-link">Home</a></li>
+                <li><a href="{{ url_for('login') }}" class="nav-link">Login</a></li>
+                <li><a href="{{ url_for('register') }}" class="nav-link">Register</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleDarkMode()">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-2">
+        <div class="flash-messages">
+            {% for cat, msg in messages %}
+            <div class="alert alert-{{ cat }}">{{ msg }}<button class="alert-close">&times;</button></div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="auth-icon">📩</div>
+                    <h2>Verify OTP</h2>
+                    <p>Enter the 6-digit code sent to your email</p>
+                </div>
+                <form method="POST" action="{{ url_for('verify_otp') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-group">
+                        <label for="otp">One-Time Password</label>
+                        <input type="text" id="otp" name="otp" class="form-control otp-input"
+                               placeholder="Enter 6-digit OTP" required maxlength="6" pattern="\d{6}"
+                               autocomplete="one-time-code" autofocus
+                               style="text-align:center;font-size:1.5rem;letter-spacing:0.5rem;">
+                    </div>
+                    <div class="otp-timer">
+                        <p>⏱️ OTP expires in <strong>10 minutes</strong></p>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Verify OTP</button>
+                </form>
+                <div class="auth-footer">
+                    <p>Didn't receive code? <a href="{{ url_for('forgot_password') }}">Resend OTP</a></p>
+                    <p><a href="{{ url_for('login') }}">Back to Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container"><p>&copy; 2026 Healthcare Data Analysis | AI-Powered Health Risk Assessment</p></div>
+    </footer>
+
+    <button class="scroll-top" id="scroll-top-btn">↑</button>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Auto-focus and allow only digits
+        document.getElementById('otp').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+    </script>
+</body>
+</html>

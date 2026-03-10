@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Data Input | HealthAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('dashboard') }}" class="sidebar-brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <span class="sidebar-section-label">Main Menu</span>
+            <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="sidebar-icon">🏠</span><span>Dashboard</span></a>
+            <a href="{{ url_for('health_form') }}" class="sidebar-link active"><span class="sidebar-icon">📝</span><span>Health Form</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Tools</span>
+            <a href="{{ url_for('analytics') }}" class="sidebar-link"><span class="sidebar-icon">📊</span><span>Analytics</span></a>
+            <a href="{{ url_for('bmi_calculator') }}" class="sidebar-link"><span class="sidebar-icon">⚖️</span><span>BMI Calculator</span></a>
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-section-label">Account</span>
+            <a href="{{ url_for('history') }}" class="sidebar-link"><span class="sidebar-icon">📚</span><span>History</span></a>
+            <a href="{{ url_for('profile') }}" class="sidebar-link"><span class="sidebar-icon">👤</span><span>My Profile</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-user"><span class="sidebar-icon">👋</span><span>{{ session['username']|capitalize }}</span></div>
+            <a href="{{ url_for('logout') }}" class="sidebar-link sidebar-logout"><span class="sidebar-icon">🚪</span><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <button class="navbar-toggle" onclick="openSidebar()" title="Open Sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="{{ url_for('dashboard') }}" class="nav-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>HealthAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a></li>
+                <li><a href="{{ url_for('health_form') }}" class="nav-link active">Health Form</a></li>
+                <li><a href="{{ url_for('analytics') }}" class="nav-link">Analytics</a></li>
+                <li><a href="{{ url_for('bmi_calculator') }}" class="nav-link">BMI</a></li>
+                <li><a href="{{ url_for('history') }}" class="nav-link">History</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleDarkMode()">🌙</button>
+                <a href="{{ url_for('profile') }}" class="nav-user">👤 {{ session['username']|capitalize }}</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-2">
+        <div class="flash-messages">
+            {% for cat, msg in messages %}
+            <div class="alert alert-{{ cat }}">{{ msg }}<button class="alert-close">&times;</button></div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="health-form-card">
+                <h2>📝 Health Risk Assessment</h2>
+                <p class="subtitle">Fill in your health parameters for AI-powered multi-disease risk prediction</p>
+
+                <form id="health-form" action="{{ url_for('predict') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <!-- Disease Type Selection -->
+                    <div class="form-section-title">🩺 Select Disease Type</div>
+                    <div class="disease-selector">
+                        <label class="disease-option selected">
+                            <input type="radio" name="disease_type" value="heart" checked>
+                            <div class="disease-icon">❤️</div>
+                            <div class="disease-label">Heart Disease</div>
+                            <div class="disease-desc">Cardiovascular risk assessment</div>
+                        </label>
+                        {% if has_diabetes_model %}
+                        <label class="disease-option">
+                            <input type="radio" name="disease_type" value="diabetes">
+                            <div class="disease-icon">🩸</div>
+                            <div class="disease-label">Diabetes Risk</div>
+                            <div class="disease-desc">Blood sugar & metabolic risk</div>
+                        </label>
+                        {% endif %}
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="form-section-title">👤 Personal Information</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">Age *</label>
+                            <input type="number" id="age" name="age" class="form-control"
+                                   placeholder="e.g., 35" required min="1" max="120">
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender *</label>
+                            <select id="gender" name="gender" class="form-control" required>
+                                <option value="" disabled selected>Select gender</option>
+                                <option value="1">Male</option>
+                                <option value="0">Female</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Vital Signs -->
+                    <div class="form-section-title">🩺 Vital Signs</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="blood_pressure">Blood Pressure (mm Hg) *</label>
+                            <input type="number" id="blood_pressure" name="blood_pressure" class="form-control"
+                                   placeholder="e.g., 120" required min="60" max="250">
+                        </div>
+                        <div class="form-group">
+                            <label for="sugar_level">Fasting Sugar Level (mg/dl) *</label>
+                            <input type="number" id="sugar_level" name="sugar_level" class="form-control"
+                                   placeholder="e.g., 100" required min="50" max="500">
+                        </div>
+                    </div>
+
+                    <!-- Body Measurements -->
+                    <div class="form-section-title">📏 Body Measurements</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="height">Height (cm)</label>
+                            <input type="number" id="height" name="height" class="form-control"
+                                   placeholder="e.g., 170" min="100" max="250" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="weight">Weight (kg)</label>
+                            <input type="number" id="weight" name="weight" class="form-control"
+                                   placeholder="e.g., 70" min="20" max="300" step="0.1">
+                        </div>
+                    </div>
+                    <div style="text-align:right;margin-top:-10px;margin-bottom:10px;">
+                        <span id="bmi-display" style="font-weight:600;font-size:0.95rem;"></span>
+                    </div>
+
+                    <!-- Symptoms -->
+                    <div class="form-section-title">📋 Symptoms</div>
+                    <div class="form-group">
+                        <label for="symptoms">Describe any symptoms (optional)</label>
+                        <textarea id="symptoms" name="symptoms" class="form-control"
+                                  placeholder="e.g., chest pain, shortness of breath, fatigue..."></textarea>
+                    </div>
+
+                    <!-- Lifestyle Habits -->
+                    <div class="form-section-title">🏃 Lifestyle Habits</div>
+                    <div class="form-group">
+                        <label>Select applicable habits:</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item"><input type="checkbox" name="smoking" value="1"> 🚬 Smoking</label>
+                            <label class="checkbox-item"><input type="checkbox" name="exercise" value="1"> 🏋️ Regular Exercise</label>
+                            <label class="checkbox-item"><input type="checkbox" name="alcohol" value="1"> 🍷 Alcohol Consumption</label>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary btn-block btn-lg">🔍 Predict Health Risk</button>
+                    </div>
+                </form>
+
+                <p class="text-center mt-3" style="color:var(--text-secondary);font-size:0.88rem;">
+                    * Required fields. Your data is processed securely with CSRF protection.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container"><p>&copy; 2026 Healthcare Data Analysis | AI-Powered Health Risk Assessment</p></div>
+    </footer>
+
+    <button class="scroll-top" id="scroll-top-btn">↑</button>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
