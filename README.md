@@ -206,7 +206,9 @@ This project is developed for educational and research purposes.
 
 Developed by **Jyothika** — passionate about leveraging AI and data science for healthcare innovation.
 
-- GitHub: [@Jyothika2406](https://github.com/Jyothika2406)
+**Guide**: Mrs D. Hima Bindu, M.Tech (Ph.D.)  
+**Institution**: Raghu Engineering College (Autonomous)  
+**Department**: Computer Science and Engineering (AI & ML)
 
 ---
 
