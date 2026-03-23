@@ -203,7 +203,7 @@ This project is developed for educational and research purposes.
 **⚠️ Disclaimer**: This application provides AI-based risk assessment and is NOT a substitute for professional medical diagnosis. Always consult qualified healthcare professionals for medical advice.
 
 
-**Guide**: Mr. G. Venkat Swamy, M.Tech (Ph.D.)  
+**Guide**: Mr. G. Venkat Swamy, Assistant Professor
 **Institution**: Raghu Institute of technology (Autonomous)  
 **Department**: Computer Science and Engineering (DS)
 
