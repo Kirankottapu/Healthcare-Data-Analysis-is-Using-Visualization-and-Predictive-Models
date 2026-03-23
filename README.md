@@ -202,13 +202,10 @@ This project is developed for educational and research purposes.
 
 **⚠️ Disclaimer**: This application provides AI-based risk assessment and is NOT a substitute for professional medical diagnosis. Always consult qualified healthcare professionals for medical advice.
 
-## 👩‍💻 Developer
 
-Developed by **Jyothika** — passionate about leveraging AI and data science for healthcare innovation.
-
-**Guide**: Mrs D. Hima Bindu, M.Tech (Ph.D.)  
-**Institution**: Raghu Engineering College (Autonomous)  
-**Department**: Computer Science and Engineering (AI & ML)
+**Guide**: Mr. G. Venkat Swamy, M.Tech (Ph.D.)  
+**Institution**: Raghu Institute of technology (Autonomous)  
+**Department**: Computer Science and Engineering (DS)
 
 ---
 
