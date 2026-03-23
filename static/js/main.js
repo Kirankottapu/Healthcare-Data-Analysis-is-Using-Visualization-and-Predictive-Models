@@ -562,6 +562,50 @@ function initBMICalcPage() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+//  SYMPTOM CHIPS - Interactive Selection Styling
+// ═══════════════════════════════════════════════════════════════════════════
+function initSymptomChips() {
+    const chips = document.querySelectorAll('.symptom-chip');
+    
+    chips.forEach(chip => {
+        const checkbox = chip.querySelector('input[type="checkbox"]');
+        
+        if (checkbox) {
+            // Apply checked state on page load
+            if (checkbox.checked) {
+                chip.classList.add('checked');
+            }
+            
+            // Handle change events
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    chip.classList.add('checked');
+                } else {
+                    chip.classList.remove('checked');
+                }
+            });
+            
+            // Handle keyboard interaction
+            chip.addEventListener('keydown', function(e) {
+                if (e.code === 'Space' || e.code === 'Enter') {
+                    e.preventDefault();
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                    chip.focus();
+                }
+            });
+        }
+    });
+}
+
+// Initialize symptom chips when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSymptomChips);
+} else {
+    initSymptomChips();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 //  UTILITY: Chart color helper for dark mode
 // ═══════════════════════════════════════════════════════════════════════════
 function getChartColors() {

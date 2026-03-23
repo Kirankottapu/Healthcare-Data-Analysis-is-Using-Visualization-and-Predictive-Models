@@ -169,110 +169,268 @@
 
                     <!-- Structured Symptom Checklist for Overall Health Risk -->
                     <div class="form-section-title">🧾 Quick Symptom Checklist (Multi‑Disease)</div>
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 10px;">
-                        Select all symptoms that apply. These cover general health risk and specific diseases like
-                        Heart Disease, Diabetes, Cancer, Obesity, Hypertension, Kidney / Liver / Respiratory diseases and Mental Health.
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
+                        Select all symptoms that apply. These cover general health risk and specific diseases like Heart Disease, Diabetes, Cancer, Obesity, Hypertension, Kidney / Liver / Respiratory diseases and Mental Health.
                     </p>
 
-                    <div class="symptom-grid">
+                    <div class="symptom-checklist-container">
                         <!-- Heart Disease & Hypertension -->
-                        <div class="symptom-card">
-                            <h4>❤️ Heart & Blood Pressure</h4>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="chest pain"> Chest pain</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="chest tightness"> Chest tightness / pressure</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="shortness of breath"> Shortness of breath</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="heart palpitations"> Heart palpitations</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="high blood pressure"> Known high blood pressure</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="dizziness"> Dizziness / light‑headedness</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="severe headache"> Severe headache</label>
+                        <div class="symptom-category">
+                            <div class="symptom-category-header">
+                                <span class="symptom-category-icon">❤️</span>
+                                <h4>Heart & Blood Pressure</h4>
+                            </div>
+                            <div class="symptom-chips-grid">
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="chest pain">
+                                    <span class="chip-label">Chest pain</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="chest tightness">
+                                    <span class="chip-label">Chest tightness</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="shortness of breath">
+                                    <span class="chip-label">Shortness of breath</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="heart palpitations">
+                                    <span class="chip-label">Heart palpitations</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="high blood pressure">
+                                    <span class="chip-label">High blood pressure</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="dizziness">
+                                    <span class="chip-label">Dizziness</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="severe headache">
+                                    <span class="chip-label">Severe headache</span>
+                                </label>
                             </div>
                         </div>
 
                         <!-- Diabetes & Metabolic -->
-                        <div class="symptom-card">
-                            <h4>🩸 Diabetes & Metabolic</h4>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="excessive thirst"> Excessive thirst</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="frequent urination"> Frequent urination</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="increased hunger"> Increased hunger</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="blurred vision"> Blurred vision</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="slow healing wounds"> Slow‑healing wounds</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="numbness in feet"> Numbness / tingling in feet</label>
+                        <div class="symptom-category">
+                            <div class="symptom-category-header">
+                                <span class="symptom-category-icon">🩸</span>
+                                <h4>Diabetes & Metabolic</h4>
+                            </div>
+                            <div class="symptom-chips-grid">
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="excessive thirst">
+                                    <span class="chip-label">Excessive thirst</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="frequent urination">
+                                    <span class="chip-label">Frequent urination</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="increased hunger">
+                                    <span class="chip-label">Increased hunger</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="blurred vision">
+                                    <span class="chip-label">Blurred vision</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="slow healing wounds">
+                                    <span class="chip-label">Slow-healing wounds</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="numbness in feet">
+                                    <span class="chip-label">Numbness in feet</span>
+                                </label>
                             </div>
                         </div>
 
                         <!-- Cancer -->
-                        <div class="symptom-card">
-                            <h4>🧬 Cancer Warning Signs</h4>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="unexplained weight loss"> Unexplained weight loss</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="persistent fatigue"> Persistent fatigue</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="persistent cough"> Persistent cough</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="lump"> Any new lump / mass</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="unusual bleeding"> Unusual bleeding</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="night sweats"> Night sweats</label>
+                        <div class="symptom-category">
+                            <div class="symptom-category-header">
+                                <span class="symptom-category-icon">🎯</span>
+                                <h4>Cancer Warning Signs</h4>
+                            </div>
+                            <div class="symptom-chips-grid">
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="unexplained weight loss">
+                                    <span class="chip-label">Unexplained weight loss</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="persistent fatigue">
+                                    <span class="chip-label">Persistent fatigue</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="persistent cough">
+                                    <span class="chip-label">Persistent cough</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="lump">
+                                    <span class="chip-label">Any new lump / mass</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="unusual bleeding">
+                                    <span class="chip-label">Unusual bleeding</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="night sweats">
+                                    <span class="chip-label">Night sweats</span>
+                                </label>
                             </div>
                         </div>
 
                         <!-- Kidney & Liver -->
-                        <div class="symptom-card">
-                            <h4>🧪 Kidney & Liver</h4>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="swelling in legs"> Swelling in legs / ankles</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="decreased urine output"> Decreased urine output</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="dark urine"> Dark urine</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="jaundice"> Yellow eyes / skin (jaundice)</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="abdominal swelling"> Abdominal swelling</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="itchy skin"> Persistent itchy skin</label>
+                        <div class="symptom-category">
+                            <div class="symptom-category-header">
+                                <span class="symptom-category-icon">🧪</span>
+                                <h4>Kidney & Liver</h4>
+                            </div>
+                            <div class="symptom-chips-grid">
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="swelling in legs">
+                                    <span class="chip-label">Swelling in legs</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="decreased urine output">
+                                    <span class="chip-label">Decreased urine output</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="dark urine">
+                                    <span class="chip-label">Dark urine</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="jaundice">
+                                    <span class="chip-label">Yellow eyes / skin</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="abdominal swelling">
+                                    <span class="chip-label">Abdominal swelling</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="itchy skin">
+                                    <span class="chip-label">Persistent itchy skin</span>
+                                </label>
                             </div>
                         </div>
 
                         <!-- Respiratory / Asthma -->
-                        <div class="symptom-card">
-                            <h4>🫁 Asthma / Respiratory</h4>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="breathing difficulty"> Breathing difficulty</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="wheezing"> Wheezing / noisy breathing</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="persistent cough"> Long‑standing cough</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="sleep apnea"> Loud snoring / sleep apnea</label>
+                        <div class="symptom-category">
+                            <div class="symptom-category-header">
+                                <span class="symptom-category-icon">🫁</span>
+                                <h4>Asthma / Respiratory</h4>
+                            </div>
+                            <div class="symptom-chips-grid">
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="breathing difficulty">
+                                    <span class="chip-label">Breathing difficulty</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="wheezing">
+                                    <span class="chip-label">Wheezing / noisy breathing</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="long-standing cough">
+                                    <span class="chip-label">Long-standing cough</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="sleep apnea">
+                                    <span class="chip-label">Sleep apnea / snoring</span>
+                                </label>
                             </div>
                         </div>
 
                         <!-- Obesity / Weight -->
-                        <div class="symptom-card">
-                            <h4>⚖️ Obesity & Weight</h4>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="excessive weight gain"> Excessive weight gain</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="difficulty exercising"> Difficulty exercising</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="joint pain"> Joint pain</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="back pain"> Back pain</label>
+                        <div class="symptom-category">
+                            <div class="symptom-category-header">
+                                <span class="symptom-category-icon">⚖️</span>
+                                <h4>Obesity & Weight</h4>
+                            </div>
+                            <div class="symptom-chips-grid">
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="excessive weight gain">
+                                    <span class="chip-label">Excessive weight gain</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="difficulty exercising">
+                                    <span class="chip-label">Difficulty exercising</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="joint pain">
+                                    <span class="chip-label">Joint pain</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="back pain">
+                                    <span class="chip-label">Back pain</span>
+                                </label>
                             </div>
                         </div>
 
                         <!-- Mental Health -->
-                        <div class="symptom-card">
-                            <h4>🧠 Mental Health</h4>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="anxiety"> Anxiety / excessive worry</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="depression"> Low mood / depression</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="insomnia"> Difficulty sleeping (insomnia)</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="mood swings"> Mood swings</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="social withdrawal"> Social withdrawal</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="difficulty concentrating"> Difficulty concentrating</label>
+                        <div class="symptom-category">
+                            <div class="symptom-category-header">
+                                <span class="symptom-category-icon">🧠</span>
+                                <h4>Mental Health</h4>
+                            </div>
+                            <div class="symptom-chips-grid">
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="anxiety">
+                                    <span class="chip-label">Anxiety / worry</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="depression">
+                                    <span class="chip-label">Depression / low mood</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="insomnia">
+                                    <span class="chip-label">Insomnia</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="mood swings">
+                                    <span class="chip-label">Mood swings</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="social withdrawal">
+                                    <span class="chip-label">Social withdrawal</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="difficulty concentrating">
+                                    <span class="chip-label">Difficulty concentrating</span>
+                                </label>
                             </div>
                         </div>
 
                         <!-- General Symptoms -->
-                        <div class="symptom-card">
-                            <h4>🌡️ General Symptoms</h4>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="fatigue"> Fatigue / tiredness</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="weakness"> General weakness</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="fever"> Fever</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="nausea"> Nausea</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="vomiting"> Vomiting</label>
-                                <label class="checkbox-item"><input type="checkbox" name="symptom_tags" value="headache"> Headache</label>
+                        <div class="symptom-category">
+                            <div class="symptom-category-header">
+                                <span class="symptom-category-icon">🌡️</span>
+                                <h4>General Symptoms</h4>
+                            </div>
+                            <div class="symptom-chips-grid">
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="fatigue">
+                                    <span class="chip-label">Fatigue / tiredness</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="weakness">
+                                    <span class="chip-label">General weakness</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="fever">
+                                    <span class="chip-label">Fever</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="nausea">
+                                    <span class="chip-label">Nausea</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="vomiting">
+                                    <span class="chip-label">Vomiting</span>
+                                </label>
+                                <label class="symptom-chip">
+                                    <input type="checkbox" name="symptom_tags" value="headache">
+                                    <span class="chip-label">Headache</span>
+                                </label>
                             </div>
                         </div>
                     </div>

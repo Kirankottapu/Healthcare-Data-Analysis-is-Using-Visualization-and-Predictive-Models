@@ -320,16 +320,26 @@ def load_models():
     # Diabetes model
     dp = os.path.join(MODEL_DIR, 'diabetes_model.pkl')
     if os.path.exists(dp):
-        diabetes_model = joblib.load(dp)
-        print("[OK] Diabetes risk model loaded")
+        try:
+            diabetes_model = joblib.load(dp)
+            print("[OK] Diabetes risk model loaded")
+        except Exception as e:
+            print(f"[WARN] Diabetes model load error: {str(e)[:60]} - heart-only mode")
     else:
         print("[WARN] Diabetes model not found - heart-only mode")
 
     mp = os.path.join(MODEL_DIR, 'model_meta.pkl')
     if os.path.exists(mp):
-        model_meta = joblib.load(mp)
+        try:
+            model_meta = joblib.load(mp)
+        except Exception as e:
+            print(f"[WARN] Model metadata load error: {str(e)[:60]}")
 
-load_models()
+try:
+    load_models()
+except Exception as e:
+    print(f"[ERROR] Model loading failed: {str(e)[:100]}")
+    print("[INFO] Continuing with available models...")
 
 # ──────────────────────────────────────────────────────────────────────────────
 #  CSRF Protection

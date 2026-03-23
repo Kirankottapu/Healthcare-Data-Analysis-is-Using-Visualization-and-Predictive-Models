@@ -882,6 +882,156 @@ select.form-control { cursor: pointer; }
     .disease-selector { flex-direction: column; }
 }
 
+/* ── Refactored Symptom Checklist (Card-Based UI) ── */
+.symptom-checklist-container {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    margin-top: 12px;
+}
+
+/* Category Container */
+.symptom-category {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.symptom-category:hover {
+    border-color: var(--primary);
+    box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.1);
+}
+
+/* Category Header with Icon and Title */
+.symptom-category-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.08) 0%, rgba(13, 206, 240, 0.05) 100%);
+    border-bottom: 2px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.symptom-category:hover .symptom-category-header {
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.12) 0%, rgba(13, 206, 240, 0.08) 100%);
+}
+
+.symptom-category-icon {
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+}
+
+.symptom-category-header h4 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.3px;
+}
+
+/* Responsive Grid Layout for Symptoms */
+.symptom-chips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    padding: 16px 20px;
+}
+
+@media (max-width: 768px) {
+    .symptom-chips-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+        padding: 14px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .symptom-chips-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+        padding: 12px 14px;
+    }
+}
+
+/* Chip/Card Styling */
+.symptom-chip {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 14px;
+    background: var(--bg-page);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    overflow: hidden;
+    user-select: none;
+}
+
+.symptom-chip input[type="checkbox"] {
+    display: none;
+}
+
+.symptom-chip .chip-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    text-align: center;
+    line-height: 1.3;
+    word-break: break-word;
+    transition: var(--transition);
+}
+
+/* Hover State */
+.symptom-chip:hover {
+    border-color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.06);
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.15);
+    transform: translateY(-2px);
+}
+
+.symptom-chip:hover .chip-label {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Checked/Selected State - Using JavaScript .checked class */
+.symptom-chip.checked {
+    background: linear-gradient(135deg, var(--primary) 0%, #0058d9 100%);
+    border-color: var(--primary);
+    box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.35);
+}
+
+.symptom-chip.checked .chip-label {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.symptom-chip.checked .chip-label::before {
+    content: '✓ ';
+    margin-right: 4px;
+    font-weight: 700;
+}
+
+/* Focus State for Accessibility */
+.symptom-chip:focus-within {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Active State */
+.symptom-chip:active {
+    transform: translateY(0);
+}
+
 /* ── Empty State ── */
 .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
 .empty-state .empty-icon { font-size: 4rem; margin-bottom: 16px; opacity: 0.5; }
